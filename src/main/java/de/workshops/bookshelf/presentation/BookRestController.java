@@ -1,5 +1,6 @@
 package de.workshops.bookshelf.presentation;
 
+import de.workshops.bookshelf.configuration.BookshelfProperties;
 import de.workshops.bookshelf.domain.Book;
 import de.workshops.bookshelf.domain.BookNotFoundException;
 import de.workshops.bookshelf.domain.BookSearchRequest;
@@ -35,8 +36,11 @@ public class BookRestController {
 
     private final BookService service;
 
-    public BookRestController(BookService service) {
+    private final BookshelfProperties properties;
+
+    public BookRestController(BookService service, BookshelfProperties properties) {
         this.service = service;
+        this.properties = properties;
     }
 
     @GetMapping
@@ -68,6 +72,12 @@ public class BookRestController {
     @PostMapping("/upload")
     public void uploadBook(@RequestParam("file") MultipartFile file) {
         log.info("Uploading file with name {} ...", file.getOriginalFilename());
+    }
+
+    @GetMapping("/{isbn}/lookup")
+    public String lookup(@PathVariable String isbn) {
+        return String.format("Lookup for ISBN %s as %s at %s with key '%s' ...",
+                isbn, properties.getOwner(), properties.getIsbnLookup().getUrl(), properties.getIsbnLookup().getApiKey());
     }
 
     @ExceptionHandler

@@ -1,0 +1,30 @@
+application:
+  title: '@project.name@'
+  version: '@project.version@'
+
+bookshelf:
+  owner: Max Mustermann
+  isbn-lookup:
+    url: https://example.org/isbn/lookup
+    api-key: secret
+
+spring:
+  application:
+    name: bookshelf
+
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+  endpoint:
+    health:
+      show-details: always # don't do this at home or at work
+    env:
+      show-values: always # don't do this at home or at work
