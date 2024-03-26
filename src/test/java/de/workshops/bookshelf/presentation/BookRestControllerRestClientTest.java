@@ -12,8 +12,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestClient;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.verify;
 import static org.springframework.boot.test.context.SpringBootTest.WebEnvironment.RANDOM_PORT;
 
 @SpringBootTest(webEnvironment = RANDOM_PORT)
@@ -41,12 +42,16 @@ class BookRestControllerRestClientTest {
     @Test
     @DirtiesContext
     void post_book_creates_new_book() {
+        List<Book> allBooksBefore = bookService.getAllBooks();
+
         Book book = new Book("New Book", "new released book", "Tester", "123123123");
         ResponseEntity<Void> response = restClient
                 .post().uri("/book").body(book)
                 .retrieve().toBodilessEntity();
 
         assertThat(response.getStatusCode()).isEqualTo(HttpStatus.CREATED);
-        verify(bookService).saveBook(book);
+
+        List<Book> allBooksAfter = bookService.getAllBooks();
+        assertThat(allBooksAfter).hasSize(allBooksBefore.size() + 1);
     }
 }
