@@ -7,6 +7,7 @@ import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -28,6 +29,7 @@ class SwaggerConfigurationTest {
         OpenAPI configuration;
 
         @Test
+        @WithMockUser(roles = "ADMIN")
         void swagger_is_available() throws Exception {
             mvc.perform(get("/swagger-ui/index.html"))
                     .andExpect(status().isOk());
@@ -52,6 +54,7 @@ class SwaggerConfigurationTest {
         ObjectProvider<OpenAPI> configuration;
 
         @Test
+        @WithMockUser(roles = "ADMIN")
         void swagger_is_not_available() throws Exception {
             mvc.perform(get("/swagger-ui/index.html"))
                     .andExpect(status().isNotFound());

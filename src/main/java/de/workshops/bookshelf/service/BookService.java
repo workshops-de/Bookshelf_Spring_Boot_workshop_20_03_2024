@@ -4,6 +4,7 @@ import de.workshops.bookshelf.domain.Book;
 import de.workshops.bookshelf.domain.BookNotFoundException;
 import de.workshops.bookshelf.domain.BookSearchRequest;
 import de.workshops.bookshelf.persistence.BookRepository;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -40,6 +41,7 @@ public class BookService {
                 .collect(toList());
     }
 
+    @PreAuthorize("hasRole('ADMIN')")
     public void saveBook(Book book) {
         repository.save(book);
     }

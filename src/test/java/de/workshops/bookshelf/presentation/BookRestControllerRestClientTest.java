@@ -1,14 +1,19 @@
 package de.workshops.bookshelf.presentation;
 
+import de.workshops.bookshelf.configuration.User;
+import de.workshops.bookshelf.configuration.UserRepository;
 import de.workshops.bookshelf.domain.Book;
 import de.workshops.bookshelf.service.BookService;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.boot.test.web.server.LocalServerPort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.web.client.RestClient;
 
@@ -25,9 +30,29 @@ class BookRestControllerRestClientTest {
     @SpyBean
     BookService bookService;
 
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    User user;
+
     @BeforeEach
     void setUp(@LocalServerPort int port) {
-        restClient = RestClient.create("http://localhost:" + port);
+        String username = "mock_user";
+        String password = "secret";
+        user = userRepository.save(new User(username, passwordEncoder.encode(password), "ROLE_ADMIN"));
+
+        restClient = RestClient.builder()
+                .baseUrl("http://localhost:" + port)
+                .defaultHeaders(headers -> headers.setBasicAuth(username, password))
+                .build();
+    }
+
+    @AfterEach
+    void tearDown() {
+        userRepository.delete(user);
     }
 
     @Test

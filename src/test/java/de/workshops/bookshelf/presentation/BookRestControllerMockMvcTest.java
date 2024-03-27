@@ -12,6 +12,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.mock.web.MockHttpServletResponse;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -48,6 +49,7 @@ class BookRestControllerMockMvcTest {
     }
 
     @Test
+    @WithMockUser
     void get_book_returns_all_books() throws Exception {
         mvc.perform(get("/book"))
                 .andDo(print())
@@ -57,6 +59,7 @@ class BookRestControllerMockMvcTest {
     }
 
     @Test
+    @WithMockUser
     void get_book_returns_again_all_books() throws Exception {
         MvcResult result = mvc.perform(get("/book")).andReturn();
         MockHttpServletResponse response = result.getResponse();

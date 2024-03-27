@@ -67,7 +67,8 @@ class BookRestControllerRestAssuredTest {
 
         @Test
         void get_book_returns_all_books() {
-            RestAssured
+            RestAssured.given()
+                        .auth().basic("dbUser", "password") // TODO don't user real user here
                     .when()
                         .get("/book")
                     .then()
